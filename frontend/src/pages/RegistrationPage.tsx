@@ -64,7 +64,7 @@ const RegistrationPage = () => {
           )}
         </FormControl>
         {isFormValid ? (
-          <Button type="submit" variant="contained" color="primary" component={Link} to="/test" onClick= {(event: any) => {localStorage.setItem("registered", "true")}}>
+          <Button type="submit" variant="contained" color="primary" component={Link} to="/test" onClick= {(event: any) => {localStorage.setItem("registered", "true"); localStorage.setItem("userData", JSON.stringify({id: 1, email: "", password: "", role: "User"}))}}>
             Register
           </Button>
         ) : (

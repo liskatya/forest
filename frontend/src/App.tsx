@@ -6,6 +6,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import TestPage from './pages/TestPage';
 import ProfilePage from './pages/ProfilePage';
 import StickyPanel from './pages/StickyPanel';
+import RoutePage from './pages/RoutePage';
 
 const App = () => {
   return (
@@ -16,6 +17,7 @@ const App = () => {
           <Route path="/registration" element={<RegistrationPage/>} />
           <Route path="/test" element={<TestPage/>} />
           <Route path="/profile" element={<ProfilePage/>} />
+          <Route path="/route" element={<RoutePage/>} />
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
                 routes for. */}

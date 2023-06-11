@@ -1,6 +1,7 @@
 import React from 'react';
 import { Typography, Box, AppBar, Toolbar, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import { User } from '../models/user';
 
 const StickyPanel = () => {
     return (
@@ -9,9 +10,10 @@ const StickyPanel = () => {
           <Button component={Link} to="/profile" color="inherit">
             Profile
           </Button>
-          <Button component={Link} to="/" color="inherit">
-            Settings
-          </Button>
+          {(JSON.parse(localStorage.getItem("userData") as string) as User).role === "User" ? (
+          <Button component={Link} to="/route" color="inherit">
+            Route
+          </Button>) : ("")}
         </Toolbar>
       </AppBar>
     );
