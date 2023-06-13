@@ -4,10 +4,9 @@ import { Link } from 'react-router-dom';
 import { User } from '../models/user';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-const RegistrationPage = () => {
+const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const navigate = useNavigate();
 
@@ -19,10 +18,6 @@ const RegistrationPage = () => {
     setPassword(event.target.value);
   };
 
-  const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setRole(event.target.value as string);
-  };
-
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const form = event.currentTarget;
@@ -31,12 +26,10 @@ const RegistrationPage = () => {
       // Handle registration logic here
       console.log('Email:', email);
       console.log('Password:', password);
-      console.log('Role:', role);
 
       // Reset form
       setEmail('');
       setPassword('');
-      setRole('');
       setIsFormValid(true);
 
       // Perform further actions, such as submitting the form
@@ -46,9 +39,9 @@ const RegistrationPage = () => {
       localStorage.setItem('registered', 'true');
       localStorage.setItem(
         'userData',
-        JSON.stringify({ id: 1, email: '', password: '', role: role })
+        JSON.stringify({ id: 1, email: '', password: '', role: 'User' })
       );
-      navigate('/test');
+      navigate('/profile');
       window.location.reload();
     } else {
       setIsFormValid(false);
@@ -85,33 +78,13 @@ const RegistrationPage = () => {
             <FormHelperText error>This field is required</FormHelperText>
           )}
         </FormControl>
-        <FormControl fullWidth margin="normal">
-          <Select
-            value={role}
-            // @ts-ignore
-            onChange={handleRoleChange}
-            displayEmpty
-            required
-          >
-            <MenuItem value="" disabled>
-              Select Role
-            </MenuItem>
-            <MenuItem value="User">User</MenuItem>
-            <MenuItem value="Psychologist">Psychologist</MenuItem>
-            <MenuItem value="Forest Keeper">Forest Keeper</MenuItem>
-            <MenuItem value="King">King</MenuItem>
-          </Select>
-          {!role && (
-            <FormHelperText error>This field is required</FormHelperText>
-          )}
-        </FormControl>
         {isFormValid ? (
           <Button
             type="submit"
             variant="contained"
             color="primary"
             component={Link}
-            to="/test"
+            to="/profile"
           >
             Register
           </Button>
@@ -125,4 +98,4 @@ const RegistrationPage = () => {
   );
 };
 
-export default RegistrationPage;
+export default LoginPage;

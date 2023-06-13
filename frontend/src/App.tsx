@@ -11,6 +11,7 @@ import RoutePage from './pages/RoutePage';
 import StatsPage from './pages/StatsPage';
 import WatchPage from './pages/WatchPage';
 import NotificationsPage from './pages/NotificationsPage';
+import LoginPage from './pages/LoginPage';
 
 const App = () => {
   const [userData, setUserData] = useState<User | null>(null);
@@ -41,6 +42,7 @@ const App = () => {
           <Route path="/stats" element={<StatsPage/>} />
           <Route path="/watch" element={<WatchPage/>} />
           <Route path="/notifications" element={<NotificationsPage/>} />
+          <Route path="/login" element={<LoginPage/>} />
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
                 routes for. */}
