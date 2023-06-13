@@ -48,7 +48,12 @@ const RegistrationPage = () => {
         'userData',
         JSON.stringify({ id: 1, email: '', password: '', role: role })
       );
-      navigate('/test');
+      if (role === 'User') {
+        navigate('/test');
+      }
+      else {
+        navigate('/profile');
+      }
       window.location.reload();
     } else {
       setIsFormValid(false);
@@ -100,6 +105,7 @@ const RegistrationPage = () => {
             <MenuItem value="Psychologist">Psychologist</MenuItem>
             <MenuItem value="Forest Keeper">Forest Keeper</MenuItem>
             <MenuItem value="King">King</MenuItem>
+            <MenuItem value="Fairy">Fairy</MenuItem>
           </Select>
           {!role && (
             <FormHelperText error>This field is required</FormHelperText>

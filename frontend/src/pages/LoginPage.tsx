@@ -86,11 +86,11 @@ const LoginPage = () => {
             component={Link}
             to="/profile"
           >
-            Register
+            Login
           </Button>
         ) : (
           <Button type="submit" variant="contained" color="primary">
-            Register
+            Login
           </Button>
         )}
       </form>
