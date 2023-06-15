@@ -13,24 +13,9 @@ import WatchPage from './pages/WatchPage';
 import NotificationsPage from './pages/NotificationsPage';
 import LoginPage from './pages/LoginPage';
 import CreateChallengePage from './pages/CreateChallengePage';
+import { UserService } from './services/UserService';
 
 const App = () => {
-  const [userData, setUserData] = useState<User | null>(null);
-
-  useEffect(() => {
-      // Retrieve the data from localStorage
-      const userDataFromLocalStorage = localStorage.getItem('userData');
-
-      // Check if the data exists in localStorage
-      if (userDataFromLocalStorage) {
-        // Parse the data from a string to an object
-        const parsedUserData = JSON.parse(userDataFromLocalStorage);
-
-        // Set the userData state with the retrieved data
-        setUserData(parsedUserData);
-      }
-    }, []);
-
   return (
     <div>
       <BrowserRouter>
@@ -50,7 +35,6 @@ const App = () => {
                 routes for. */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
-        { userData === null ? ("") : (<StickyPanel/>) }
       </BrowserRouter>
     </div>
   );

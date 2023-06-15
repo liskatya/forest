@@ -20,9 +20,9 @@ data class User(
 
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
-        val role: Role = Role.NONE,
+        val role: Role = Role.None,
 
         @Column(nullable = false)
         @Enumerated(EnumType.STRING)
-        val personalityType: PersonalityType = PersonalityType.NONE
+        val personalityType: PersonalityType = PersonalityType.None
 )

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Typography, Box, List, ListItem, ListItemText } from '@mui/material';
+import StickyPanel from "./StickyPanel";
 
 interface Route {
   id: number;
@@ -43,25 +44,28 @@ const RoutePage: React.FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: 600, margin: '0 auto', padding: '24px' }}>
-      <Typography variant="h4" gutterBottom>
-        User Route
-      </Typography>
-      <List>
-        {userRoute.challenges.map((challenge) => (
-          <ListItem key={challenge.id}>
-            <ListItemText
-              primary={challenge.name}
-              secondary={challenge.description}
-            />
-            <ListItemText
-              primary={`Latitude: ${challenge.coordinates.latitude}`}
-              secondary={`Longitude: ${challenge.coordinates.longitude}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
+    <div>
+      <Box sx={{ maxWidth: 600, margin: '0 auto', padding: '24px' }}>
+        <Typography variant="h4" gutterBottom>
+          User Route
+        </Typography>
+        <List>
+          {userRoute.challenges.map((challenge) => (
+            <ListItem key={challenge.id}>
+              <ListItemText
+                primary={challenge.name}
+                secondary={challenge.description}
+              />
+              <ListItemText
+                primary={`Latitude: ${challenge.coordinates.latitude}`}
+                secondary={`Longitude: ${challenge.coordinates.longitude}`}
+              />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+      <StickyPanel/>
+    </div>
   );
 };
 

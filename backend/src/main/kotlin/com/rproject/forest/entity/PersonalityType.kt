@@ -1,7 +1,7 @@
 package com.rproject.forest.entity
 
 enum class PersonalityType {
-    NONE,
+    None,
     ISTJ,
     ISFJ,
     INFJ,

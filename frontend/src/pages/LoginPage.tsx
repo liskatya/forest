@@ -3,6 +3,7 @@ import { TextField, Button, FormControl, FormHelperText, Box, Select, MenuItem }
 import { Link } from 'react-router-dom';
 import { User } from '../models/user';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { UserService } from '../services/UserService';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -23,26 +24,37 @@ const LoginPage = () => {
     const form = event.currentTarget;
 
     if (form.checkValidity()) {
-      // Handle registration logic here
       console.log('Email:', email);
       console.log('Password:', password);
 
-      // Reset form
-      setEmail('');
-      setPassword('');
+      const user: User = {
+        id: 0,
+        name: '',
+        email: email,
+        password: password,
+        role: 'None',
+        personalityType: 'None',
+      };
+
       setIsFormValid(true);
 
-      // Perform further actions, such as submitting the form
-      // You can add your logic here
+      fetch('http://localhost:8080/api/user/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+        .then((response) => response.json())
+        .then((data: User) => {
+          console.log('Login response:', data);
 
-      // For example, if you want to store data in localStorage:
-      localStorage.setItem('registered', 'true');
-      localStorage.setItem(
-        'userData',
-        JSON.stringify({ id: 1, email: '', password: '', role: 'User' })
-      );
-      navigate('/profile');
-      window.location.reload();
+          UserService.authenticate(data);
+          navigate('/profile');
+        })
+        .catch((error) => {
+          console.error('Registration error:', error);
+        });
     } else {
       setIsFormValid(false);
       form.reportValidity();

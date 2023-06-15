@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextField, Button, FormControl, FormHelperText, Box, Typography, MenuItem, Select } from '@mui/material';
+import StickyPanel from './StickyPanel';
 
 const CreateChallengePage = () => {
   const [title, setTitle] = useState('');
@@ -45,6 +46,7 @@ const CreateChallengePage = () => {
   };
 
   return (
+    <div>
     <Box p={2}>
       <Typography variant="h5" gutterBottom>
         Create Challenge
@@ -122,6 +124,8 @@ const CreateChallengePage = () => {
         </Button>
       </form>
     </Box>
+    <StickyPanel/>
+    </div>
   );
 };
 

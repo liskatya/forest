@@ -3,13 +3,20 @@ import { TextField, Button, FormControl, FormHelperText, Box, Select, MenuItem }
 import { Link } from 'react-router-dom';
 import { User } from '../models/user';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { UserService } from '../services/UserService';
+import { UserInfo } from 'os';
 
 const RegistrationPage = () => {
+  const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('');
   const [isFormValid, setIsFormValid] = useState(false);
   const navigate = useNavigate();
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -19,7 +26,7 @@ const RegistrationPage = () => {
     setPassword(event.target.value);
   };
 
-  const handleRoleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleRoleChange = (event: any) => {
     setRole(event.target.value as string);
   };
 
@@ -29,32 +36,48 @@ const RegistrationPage = () => {
 
     if (form.checkValidity()) {
       // Handle registration logic here
+      console.log('Name:', name);
       console.log('Email:', email);
       console.log('Password:', password);
       console.log('Role:', role);
 
-      // Reset form
-      setEmail('');
-      setPassword('');
-      setRole('');
+      const user: User = {
+        id: 0,
+        name: name,
+        email: email,
+        password: password,
+        role: role,
+        personalityType: 'None',
+      };
+
       setIsFormValid(true);
 
       // Perform further actions, such as submitting the form
       // You can add your logic here
 
       // For example, if you want to store data in localStorage:
-      localStorage.setItem('registered', 'true');
-      localStorage.setItem(
-        'userData',
-        JSON.stringify({ id: 1, email: '', password: '', role: role })
-      );
-      if (role === 'User') {
-        navigate('/test');
-      }
-      else {
-        navigate('/profile');
-      }
-      window.location.reload();
+      fetch('http://localhost:8080/api/user/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(user),
+      })
+        .then((response) => response.json())
+        .then((data: User) => {
+          console.log('Registration response:', data);
+
+          UserService.authenticate(data);
+
+          if (role === 'User') {
+            navigate('/test');
+          } else {
+            navigate('/profile');
+          }
+        })
+        .catch((error) => {
+          console.error('Registration error:', error);
+        });
     } else {
       setIsFormValid(false);
       form.reportValidity();
@@ -66,6 +89,17 @@ const RegistrationPage = () => {
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth margin="normal">
           <TextField
+            label="Name"
+            variant="outlined"
+            type="text"
+            value={name}
+            onChange={handleNameChange}
+            required
+          />
+          {!name && <FormHelperText error>This field is required</FormHelperText>}
+        </FormControl>
+        <FormControl fullWidth margin="normal">
+          <TextField
             label="Email"
             variant="outlined"
             type="email"
@@ -73,9 +107,7 @@ const RegistrationPage = () => {
             onChange={handleEmailChange}
             required
           />
-          {!email && (
-            <FormHelperText error>This field is required</FormHelperText>
-          )}
+          {!email && <FormHelperText error>This field is required</FormHelperText>}
         </FormControl>
         <FormControl fullWidth margin="normal">
           <TextField
@@ -86,39 +118,23 @@ const RegistrationPage = () => {
             onChange={handlePasswordChange}
             required
           />
-          {!password && (
-            <FormHelperText error>This field is required</FormHelperText>
-          )}
+          {!password && <FormHelperText error>This field is required</FormHelperText>}
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <Select
-            value={role}
-            // @ts-ignore
-            onChange={handleRoleChange}
-            displayEmpty
-            required
-          >
+          <Select value={role} onChange={handleRoleChange} displayEmpty required>
             <MenuItem value="" disabled>
               Select Role
             </MenuItem>
             <MenuItem value="User">User</MenuItem>
             <MenuItem value="Psychologist">Psychologist</MenuItem>
-            <MenuItem value="Forest Keeper">Forest Keeper</MenuItem>
+            <MenuItem value="ForestKeeper">Forest Keeper</MenuItem>
             <MenuItem value="King">King</MenuItem>
             <MenuItem value="Fairy">Fairy</MenuItem>
           </Select>
-          {!role && (
-            <FormHelperText error>This field is required</FormHelperText>
-          )}
+          {!role && <FormHelperText error>This field is required</FormHelperText>}
         </FormControl>
         {isFormValid ? (
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            component={Link}
-            to="/test"
-          >
+          <Button type="submit" variant="contained" color="primary" component={Link} to="/test">
             Register
           </Button>
         ) : (

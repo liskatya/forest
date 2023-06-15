@@ -3,29 +3,24 @@ import { Typography, Box, AppBar, Toolbar, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 import { User } from '../models/user';
+import { UserService } from '../services/UserService';
 
 const StickyPanel = () => {
   const [userData, setUserData] = useState<User | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-      // Retrieve the data from localStorage
-      const userDataFromLocalStorage = localStorage.getItem('userData');
+    const fetchData = async () => {
+      const userData = await UserService.userData();
+      setUserData(userData);
+    };
 
-      // Check if the data exists in localStorage
-      if (userDataFromLocalStorage) {
-        // Parse the data from a string to an object
-        const parsedUserData = JSON.parse(userDataFromLocalStorage);
-
-        // Set the userData state with the retrieved data
-        setUserData(parsedUserData);
-      }
-    }, []);
+    fetchData();
+  }, []);
 
     const handleExitClick = (event: any) => {
-      localStorage.clear();
+      UserService.deauthenticate();
       navigate('/');
-      window.location.reload()
     };
 
     return (
