@@ -9,6 +9,9 @@ import {
   Button,
   Box,
 } from '@mui/material';
+import { UserService } from '../services/UserService';
+import { User } from '../models/user'
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 interface Answers {
   [questionId: string]: string;
@@ -31,6 +34,7 @@ const questions = [
 const TestPage = () => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
+  const navigate = useNavigate();
 
   const handleAnswerChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
@@ -48,16 +52,38 @@ const TestPage = () => {
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
     console.log('Answers:', answers);
-    // Perform further actions with the answers
+
+    const fetchData = async () => {
+      let userData = await UserService.userData();
+      userData!!.personalityType = "ISTJ"
+      fetch('http://localhost:8080/api/user/uploadTest', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => response.json())
+        .then((data: User) => {
+          console.log('Test uploaded response:', data);
+
+          navigate("/profile")
+        })
+        .catch((error) => {
+          console.error('Registration error:', error);
+        });
+    };
+
+    fetchData();
   };
 
   const currentQuestion = questions[currentQuestionIndex];
 
   return (
-    <Box sx={{ height: '400px', overflowY: 'auto' }}>
+    <Box sx={{ height: '400px', overflowY: 'auto' }} p={2}>
       <form onSubmit={handleSubmit}>
         <Typography variant="h5" gutterBottom>
           Test Page
@@ -91,7 +117,7 @@ const TestPage = () => {
           {currentQuestionIndex < questions.length - 1 ? (
             <Button onClick={handleNext}>Next</Button>
           ) : (
-            <Button type="submit" variant="contained" color="primary" component={Link} to="/profile">
+            <Button onClick={handleSubmit} type="submit" variant="contained" color="primary">
               Submit
             </Button>
           )}

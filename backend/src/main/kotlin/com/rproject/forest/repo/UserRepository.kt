@@ -1,4 +1,4 @@
-package com.rproject.forest.service
+package com.rproject.forest.repo
 
 import com.rproject.forest.entity.User
 import org.springframework.data.jpa.repository.JpaRepository

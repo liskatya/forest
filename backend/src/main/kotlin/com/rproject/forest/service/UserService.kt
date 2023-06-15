@@ -1,6 +1,8 @@
 package com.rproject.forest.service
 
+import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.User
+import com.rproject.forest.repo.UserRepository
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -20,5 +22,14 @@ class UserService(private val userRepository: UserRepository) {
 
     fun getUser(id: Long): Optional<User> {
         return userRepository.findById(id)
+    }
+
+    fun updateUser(user: User): Boolean {
+        val userToUpdate = getUser(user.id)
+        if (userToUpdate.isEmpty) {
+            return false
+        }
+        userRepository.save(user)
+        return true
     }
 }

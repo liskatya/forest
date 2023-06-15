@@ -1,6 +1,7 @@
 package com.rproject.forest.controller
 
 import com.rproject.forest.config.WebConstants
+import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.User
 import com.rproject.forest.service.UserService
 import jakarta.servlet.http.HttpServletRequest
@@ -46,6 +47,16 @@ class UserController(private val service: UserService) {
         val user = service.getUser(id)
         return if (user.isPresent) {
             ResponseEntity.ok().body(user.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @PostMapping(path = ["uploadTest"])
+    fun uploadTest(@RequestBody user: User, request: HttpServletRequest): ResponseEntity<User> {
+        val res = service.updateUser(user)
+        return if (res) {
+            ResponseEntity.ok().body(user)
         } else {
             ResponseEntity.notFound().build()
         }
