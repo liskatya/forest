@@ -1,5 +1,7 @@
 package com.rproject.forest.service
 
+import com.rproject.forest.entity.Notification
+import com.rproject.forest.entity.NotificationType
 import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.User
 import com.rproject.forest.repo.UserRepository
@@ -7,7 +9,8 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class UserService(private val userRepository: UserRepository) {
+class UserService(private val userRepository: UserRepository,
+                  private val notificationService: NotificationService) {
     fun saveUser(user: User): Optional<User> {
         val userOpt = userRepository.findByEmail(user.email)
         if (userOpt.isPresent) {
@@ -24,12 +27,23 @@ class UserService(private val userRepository: UserRepository) {
         return userRepository.findById(id)
     }
 
-    fun updateUser(user: User): Boolean {
+    fun updateUser(user: User): Optional<User> {
         val userToUpdate = getUser(user.id)
         if (userToUpdate.isEmpty) {
+            return Optional.empty()
+        }
+        return Optional.of(userRepository.save(user))
+    }
+
+    fun uploadTestResult(user: User): Boolean {
+        val res = updateUser(user)
+        if (res.isEmpty) {
             return false
         }
-        userRepository.save(user)
+
+        val updatedUser = res.get()
+        val notification = Notification(0, updatedUser.id, NotificationType.TestResultUploaded)
+        notificationService.post(notification)
         return true
     }
 }

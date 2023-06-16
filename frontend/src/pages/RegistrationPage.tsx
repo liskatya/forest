@@ -134,7 +134,7 @@ const RegistrationPage = () => {
           {!role && <FormHelperText error>This field is required</FormHelperText>}
         </FormControl>
         {isFormValid ? (
-          <Button type="submit" variant="contained" color="primary" component={Link} to="/test">
+          <Button type="submit" variant="contained" color="primary">
             Register
           </Button>
         ) : (

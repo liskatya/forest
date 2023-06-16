@@ -1,6 +1,8 @@
 package com.rproject.forest.controller
 
 import com.rproject.forest.config.WebConstants
+import com.rproject.forest.entity.Notification
+import com.rproject.forest.entity.NotificationType
 import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.User
 import com.rproject.forest.service.UserService
@@ -54,7 +56,7 @@ class UserController(private val service: UserService) {
 
     @PostMapping(path = ["uploadTest"])
     fun uploadTest(@RequestBody user: User, request: HttpServletRequest): ResponseEntity<User> {
-        val res = service.updateUser(user)
+        val res = service.uploadTestResult(user)
         return if (res) {
             ResponseEntity.ok().body(user)
         } else {
