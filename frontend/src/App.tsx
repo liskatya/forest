@@ -14,6 +14,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import LoginPage from './pages/LoginPage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import { UserService } from './services/UserService';
+import CreateRoutePage from './pages/CreateRoutePage';
 
 const App = () => {
   return (
@@ -30,6 +31,7 @@ const App = () => {
           <Route path="/notifications" element={<NotificationsPage/>} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/create_challenge" element={<CreateChallengePage/>} />
+          <Route path="/create_route/:notificationId" element={<CreateRoutePage/>} />
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
                 routes for. */}

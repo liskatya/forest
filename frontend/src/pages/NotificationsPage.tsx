@@ -4,10 +4,12 @@ import { UserService } from '../services/UserService';
 import { User } from '../models/user';
 import { Notification } from '../models/notification';
 import StickyPanel from './StickyPanel';
+import { useNavigate } from 'react-router-dom';
 
 const NotificationsPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -45,6 +47,7 @@ const NotificationsPage = () => {
   const handleCreateRoute = (notification: Notification) => {
     // Handle creating a route for the notification
     console.log('Create route for notification:', notification);
+    navigate(`/create_route/${notification.id}`);
   };
 
   return (
