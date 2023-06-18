@@ -3,13 +3,23 @@ package com.rproject.forest.service
 import com.rproject.forest.entity.Notification
 import com.rproject.forest.entity.NotificationType
 import com.rproject.forest.repo.NotificationRepository
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
 class NotificationService(private val repo: NotificationRepository) {
-    fun post(notification: Notification) {
-        repo.save(notification)
+
+    private val logger: Logger = LoggerFactory.getLogger(NotificationService::class.java)
+    fun post(notification: Notification): Optional<Notification> {
+        return try {
+            val res = repo.save(notification)
+            Optional.of(res)
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
     }
 
     fun getAllByType(type: NotificationType): List<Notification> {

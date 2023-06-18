@@ -26,10 +26,10 @@ data class Challenge(
     val positionY: Float = 0.0f,
 
     @Column(nullable = false)
-    val kingApproved: Boolean = false,
+    var kingApproved: Boolean = false,
 
     @Column(nullable = false)
-    val psychologistApproved: Boolean = false,
+    var psychologistApproved: Boolean = false,
 
     @ManyToMany(mappedBy = "challenges")
     @JsonIgnore

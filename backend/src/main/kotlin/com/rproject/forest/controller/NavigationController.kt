@@ -4,12 +4,7 @@ import com.rproject.forest.entity.Challenge
 import com.rproject.forest.entity.Route
 import com.rproject.forest.service.NavigationService
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/navigation")
@@ -24,9 +19,36 @@ class NavigationController(private val navigationService: NavigationService) {
         return ResponseEntity.ok().body(res.get())
     }
 
+    @PutMapping("challenge")
+    fun updateChallenge(@RequestBody challenge: Challenge): ResponseEntity<Challenge> {
+        val res = navigationService.updateChallenge(challenge)
+        if (res.isEmpty) {
+            return ResponseEntity.badRequest().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
+
+    @PutMapping("challenge/approve/{id}/{personType}")
+    fun approveChallenge(@PathVariable id: Long, @PathVariable personType: String): ResponseEntity<Challenge> {
+        val res = navigationService.approveChallenge(id, personType == "King")
+        if (res.isEmpty) {
+            return ResponseEntity.badRequest().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
+
     @GetMapping("challenge/all")
     fun getAllChallenges(): ResponseEntity<List<Challenge>> {
         return ResponseEntity.ok().body(navigationService.getAllChallenges())
+    }
+
+    @GetMapping("challenge/{id}")
+    fun getAllChallenge(@PathVariable id: Long): ResponseEntity<Challenge> {
+        val res = navigationService.getChallenge(id)
+        if (res.isEmpty) {
+            return ResponseEntity.badRequest().build()
+        }
+        return ResponseEntity.ok().body(res.get())
     }
 
     @PostMapping("route")

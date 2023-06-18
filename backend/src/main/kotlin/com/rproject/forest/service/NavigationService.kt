@@ -32,6 +32,53 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
         }
     }
 
+    fun updateChallenge(challenge: Challenge): Optional<Challenge> {
+        val res = challengeRepo.findById(challenge.id)
+        if (res.isEmpty) {
+            return Optional.empty()
+        }
+
+        val dbChallenge = res.get()
+        val updatedChallenge = Challenge(
+            dbChallenge.id,
+            dbChallenge.title,
+            dbChallenge.description,
+            dbChallenge.difficulty,
+            dbChallenge.positionX,
+            dbChallenge.positionY,
+            challenge.kingApproved,
+            challenge.psychologistApproved,
+            dbChallenge.routes)
+
+        return try {
+            Optional.of(challengeRepo.save(updatedChallenge))
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
+    }
+
+    fun approveChallenge(id: Long, approvedByKing: Boolean): Optional<Challenge> {
+        val res = challengeRepo.findById(id)
+        if (res.isEmpty) {
+            return Optional.empty()
+        }
+
+        val dbChallenge = res.get()
+        if (approvedByKing) {
+            dbChallenge.kingApproved = true
+        } else {
+            dbChallenge.psychologistApproved = true
+        }
+
+        return try {
+            Optional.of(challengeRepo.save(dbChallenge))
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
+    }
+
     fun getAllChallenges(): List<Challenge> {
         return challengeRepo.findAll()
     }
@@ -58,5 +105,9 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
 
     fun getRouteByUserId(userId: Long): Optional<Route> {
         return routeRepo.findByUserId(userId)
+    }
+
+    fun getChallenge(id: Long): Optional<Challenge> {
+        return challengeRepo.findById(id)
     }
 }

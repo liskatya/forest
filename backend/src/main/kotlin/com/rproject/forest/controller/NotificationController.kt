@@ -6,6 +6,7 @@ import com.rproject.forest.service.NotificationService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -32,6 +33,15 @@ class NotificationController(private val service: NotificationService) {
     @PutMapping
     fun updateNotification(@RequestBody notification: Notification): ResponseEntity<Notification> {
         val notificationOpt = service.update(notification)
+        if (notificationOpt.isEmpty) {
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok().body(notificationOpt.get())
+    }
+
+    @PostMapping
+    fun postNotification(@RequestBody notification: Notification): ResponseEntity<Notification> {
+        val notificationOpt = service.post(notification)
         if (notificationOpt.isEmpty) {
             return ResponseEntity.notFound().build()
         }
