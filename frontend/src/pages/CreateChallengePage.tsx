@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, FormControl, FormHelperText, Box, Typography, MenuItem, Select } from '@mui/material';
 import StickyPanel from './StickyPanel';
+import { Challenge } from '../models/challenge';
 
 const CreateChallengePage = () => {
   const [title, setTitle] = useState('');
@@ -29,7 +30,7 @@ const CreateChallengePage = () => {
     setCommentary(event.target.value);
   };
 
-  const handleSubmit = (event: any) => {
+  const handleSubmit = async (event: any) => {
     event.preventDefault();
     // Perform submission logic here
     console.log('Title:', title);
@@ -37,6 +38,32 @@ const CreateChallengePage = () => {
     console.log('Difficulty:', difficulty);
     console.log('Position:', position);
     console.log('Commentary:', commentary);
+
+    const challenge: Challenge = {
+      id: 0,
+      title: title,
+      description: description,
+      difficulty: Number(difficulty),
+      positionX: Number(position.split(",")[0]),
+      positionY: Number(position.split(",")[1]),
+      kingApproved: false,
+      psycoApproved: false,
+      routes: []
+    }
+
+    try {
+      const response = await fetch(`http://localhost:8080/api/navigation/challenge`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(challenge),
+      });
+      const data = await response.json();
+      console.log('Challenge data:', data);
+    } catch (error) {
+      console.error('Error fetching challenge data:', error);
+    }
     // Reset form
     setTitle('');
     setDescription('');

@@ -28,17 +28,25 @@ const NotificationsPage = () => {
   }, []);
 
   useEffect(() => {
-    if (user && user.role === 'Psychologist') {
       const fetchNotifications = async () => {
-        try {
-          const response = await fetch('http://localhost:8080/api/notification/TestResultUploaded');
-          const data = await response.json();
-          setNotifications(data);
-          console.log('Notifications:', data);
-        } catch (error) {
-          console.error('Error fetching notifications:', error);
+      try {
+        if (user && user.role === 'Psychologist') {
+          const notificationTypes = ['TestResultUploaded', 'ChallengeUploaded']
+          let notifications: Notification[] = [];
+          notificationTypes.map(async (type) => {
+            const response = await fetch(`http://localhost:8080/api/notification/${type}`);
+            const data = await response.json() as Notification[];
+            notifications.concat(data);
+          });
+          setNotifications(notifications);
+          console.log('Notifications:', notifications);
         }
-      };
+        if (user && user.role === '') {
+          
+        }
+      } catch (error) {
+        console.error('Error fetching notifications:', error);
+      }
 
       fetchNotifications();
     }
@@ -61,6 +69,12 @@ const NotificationsPage = () => {
               <Typography variant="body2">Type: {notification.type}</Typography>
               {notification.type === 'TestResultUploaded' && (
                 <Button onClick={() => handleCreateRoute(notification)}>Create Route</Button>
+              )}
+              {notification.type === 'ChallengeUploaded' && (
+                <div>
+                  <Button onClick={() => handleCreateRoute(notification)}>Approve</Button>
+                  <Button onClick={() => handleCreateRoute(notification)}>Reject</Button>
+                </div>
               )}
             </CardContent>
           </Card>

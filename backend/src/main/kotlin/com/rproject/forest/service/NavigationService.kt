@@ -1,6 +1,8 @@
 package com.rproject.forest.service
 
 import com.rproject.forest.entity.Challenge
+import com.rproject.forest.entity.Notification
+import com.rproject.forest.entity.NotificationType
 import com.rproject.forest.entity.Route
 import com.rproject.forest.repo.ChallengeRepository
 import com.rproject.forest.repo.RouteRepository
@@ -13,13 +15,16 @@ import java.util.*
 @Service
 class NavigationService(private val challengeRepo: ChallengeRepository,
                         private val routeRepo: RouteRepository,
-                        private val userRepo: UserRepository) {
+                        private val userRepo: UserRepository,
+                        private val notificationService: NotificationService) {
 
     private val logger: Logger = LoggerFactory.getLogger(NavigationService::class.java)
 
     fun createChallenge(challenge: Challenge): Optional<Challenge> {
         return try {
             val res = challengeRepo.save(challenge)
+            val notification = Notification(0, res.id, NotificationType.ChallengeUploaded)
+            notificationService.post(notification)
             Optional.of(res)
         } catch (e: Exception) {
             logger.error(e.toString())

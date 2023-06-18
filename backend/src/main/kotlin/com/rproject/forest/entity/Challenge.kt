@@ -25,6 +25,12 @@ data class Challenge(
     @Column(name = "position_y", nullable = false)
     val positionY: Float = 0.0f,
 
+    @Column(nullable = false)
+    val kingApproved: Boolean = false,
+
+    @Column(nullable = false)
+    val psychologistApproved: Boolean = false,
+
     @ManyToMany(mappedBy = "challenges")
     @JsonIgnore
     val routes: List<Route> = emptyList()

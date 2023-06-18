@@ -11,7 +11,7 @@ const RoutePage: React.FC = () => {
   useEffect(() => {
     const fetchRoute = async () => {
       try {
-        const userId = UserService.userId(); // Assuming UserService has a getUserId() function to retrieve the user ID
+        const userId = UserService.userId();
         const response = await fetch(`http://localhost:8080/api/navigation/route/${userId}`);
         const data = await response.json();
         setUserRoute(data);
@@ -30,6 +30,7 @@ const RoutePage: React.FC = () => {
           {userRoute ? userRoute.name : 'Loading...'}
         </Typography>
         {userRoute ? (
+          <div>
           <List>
             {userRoute.challenges.map((challenge: Challenge) => (
               <ListItem key={challenge.id as React.Key}>
@@ -45,12 +46,13 @@ const RoutePage: React.FC = () => {
               </ListItem>
             ))}
           </List>
+          <Button variant="contained" color="primary">
+            Start route
+          </Button>
+        </div>
         ) : (
           <Typography variant="body1">Fetching route...</Typography>
         )}
-        <Button variant="contained" color="primary">
-            Start route
-        </Button>
       </Box>
       <StickyPanel />
     </div>

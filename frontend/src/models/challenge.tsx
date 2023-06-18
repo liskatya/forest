@@ -7,5 +7,7 @@ export interface Challenge {
     difficulty: Number,
     positionX: Number,
     positionY: Number,
+    kingApproved: boolean,
+    psycoApproved: boolean,
     routes: Route[]
 }
