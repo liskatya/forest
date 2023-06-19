@@ -79,6 +79,23 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
         }
     }
 
+    fun rejectChallenge(id: Long, approvedByKing: Boolean): Optional<Challenge> {
+        val res = challengeRepo.findById(id)
+        if (res.isEmpty) {
+            return Optional.empty()
+        }
+
+        val notification = Notification(0, id, NotificationType.ChallengeRejected)
+        notificationService.post(notification)
+
+        return try {
+            Optional.of(res.get())
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
+    }
+
     fun getAllChallenges(): List<Challenge> {
         return challengeRepo.findAll()
     }

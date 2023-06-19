@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TextField, Button, FormControl, FormHelperText, Box, Typography, MenuItem, Select } from '@mui/material';
 import StickyPanel from './StickyPanel';
 import { Challenge } from '../models/challenge';
+import { useParams } from 'react-router-dom';
+import { Route } from '../models/route';
 
 const CreateChallengePage = () => {
   const [title, setTitle] = useState('');
@@ -9,6 +11,31 @@ const CreateChallengePage = () => {
   const [difficulty, setDifficulty] = useState('');
   const [position, setPosition] = useState('');
   const [commentary, setCommentary] = useState('');
+  const [challengeToUpdate, setChallenge] = useState<Challenge | null>(null);
+  const { challengeId } = useParams();
+
+  useEffect(() => {
+    if (challengeId) {
+      const fetchChallenge = async () => {
+        try {
+          const response = await fetch(`http://localhost:8080/api/navigation/challenge/${challengeId}`);
+          const data = await response.json() as Challenge;
+          setChallenge(data);
+          console.log('CHallenge data:', data);
+
+          setTitle(data.title);
+          setDescription(data.description);
+          setDifficulty(data.difficulty.toString());
+          setPosition(`${data.positionX}, ${data.positionY}`);
+
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      };
+  
+      fetchChallenge();
+    }
+  }, []);
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
@@ -39,16 +66,27 @@ const CreateChallengePage = () => {
     console.log('Position:', position);
     console.log('Commentary:', commentary);
 
+    let id: Number = 0;
+    let kingApproved = false;
+    let psycoApproved = false;
+    let routes: Route[] = [];
+    if (challengeToUpdate) {
+      id = challengeToUpdate.id;
+      kingApproved = challengeToUpdate.kingApproved;
+      psycoApproved = challengeToUpdate.psycoApproved;
+      routes = challengeToUpdate.routes;
+    }
+
     const challenge: Challenge = {
-      id: 0,
+      id: id,
       title: title,
       description: description,
       difficulty: Number(difficulty),
       positionX: Number(position.split(",")[0]),
       positionY: Number(position.split(",")[1]),
-      kingApproved: false,
-      psycoApproved: false,
-      routes: []
+      kingApproved: kingApproved,
+      psycoApproved: psycoApproved,
+      routes: routes
     }
 
     try {

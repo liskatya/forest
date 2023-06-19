@@ -37,13 +37,22 @@ class NavigationController(private val navigationService: NavigationService) {
         return ResponseEntity.ok().body(res.get())
     }
 
+    @PutMapping("challenge/reject/{id}/{personType}")
+    fun rejectChallenge(@PathVariable id: Long, @PathVariable personType: String): ResponseEntity<Challenge> {
+        val res = navigationService.rejectChallenge(id, personType == "King")
+        if (res.isEmpty) {
+            return ResponseEntity.badRequest().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
+
     @GetMapping("challenge/all")
     fun getAllChallenges(): ResponseEntity<List<Challenge>> {
         return ResponseEntity.ok().body(navigationService.getAllChallenges())
     }
 
     @GetMapping("challenge/{id}")
-    fun getAllChallenge(@PathVariable id: Long): ResponseEntity<Challenge> {
+    fun getChallenge(@PathVariable id: Long): ResponseEntity<Challenge> {
         val res = navigationService.getChallenge(id)
         if (res.isEmpty) {
             return ResponseEntity.badRequest().build()

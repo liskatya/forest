@@ -39,6 +39,9 @@ const NotificationsPage = () => {
         if (user && user.role === 'King') {
           notificationTypes = ['ChallengeUploaded']
         }
+        if (user && user.role === 'Fairy') {
+          notificationTypes = ['ChallengeRejected']
+        }
 
         let notifications: Notification[] = [];
         notificationTypes.map(async (type) => {
@@ -65,7 +68,7 @@ const NotificationsPage = () => {
   const handleChallengeAnswer = (notification: Notification, approved: boolean) => {
     if (approved) {
       const approveChallenge = async () => {
-        const response = await fetch(`http://localhost:8080/api/navigation/challenge/approve/${notification.id}/${user!!.role}`, {
+        const response = await fetch(`http://localhost:8080/api/navigation/challenge/approve/${notification.userId}/${user!!.role}`, {
           method: 'PUT'
         })
         const data = await response.json();
@@ -73,6 +76,16 @@ const NotificationsPage = () => {
       }
 
       approveChallenge();
+    } else {
+      const rejectChallenge = async () => {
+        const response = await fetch(`http://localhost:8080/api/navigation/challenge/reject/${notification.userId}/${user!!.role}`, {
+          method: 'PUT'
+        })
+        const data = await response.json();
+        console.log("Rejected challenge: ", data)
+      }
+
+      rejectChallenge();
     }
   };
 
@@ -85,6 +98,25 @@ const NotificationsPage = () => {
     }
 
     loadChallenge();
+  };
+
+  const markChallengeProcessed = async (notification: Notification) => {
+    notification.processed = true;
+    const response = await fetch(`http://localhost:8080/api/notification`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(notification)
+    })
+    const data = await response.json();
+    console.log("Updated notification: ", data)
+    setChallenge(data)
+  }
+
+  const handleChallengeRejected = (notification: Notification) => {
+    markChallengeProcessed(notification);
+    navigate(`/create_challenge/${notification.userId}`);
   };
 
   return (
@@ -109,6 +141,11 @@ const NotificationsPage = () => {
                   <Button onClick={() => handleChallengeAnswer(notification, true)}>Approve</Button>
                   <Button onClick={() => handleChallengeAnswer(notification, false)}>Reject</Button>
                   <Button onClick={() => handleChallengeLoad(notification)}>Show more</Button>
+                </div>
+              )}
+              {notification.type === 'ChallengeRejected' && (
+                <div>
+                  <Button onClick={() => handleChallengeRejected(notification)}>Edit challenge</Button>
                 </div>
               )}
             </CardContent>
