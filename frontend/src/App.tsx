@@ -31,6 +31,7 @@ const App = () => {
           <Route path="/notifications" element={<NotificationsPage/>} />
           <Route path="/login" element={<LoginPage/>} />
           <Route path="/create_challenge/:challengeId" element={<CreateChallengePage/>} />
+          <Route path="/create_challenge/" element={<CreateChallengePage/>} />
           <Route path="/create_route/:notificationId" element={<CreateRoutePage/>} />
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
