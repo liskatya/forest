@@ -12,18 +12,9 @@ const UserStatisticsPage = () => {
 
   const handleSearch = async () => {
     try {
-      //const response = await fetch(`http://localhost:8080/api/user/by_nickname/${searchNickname}`);
-      //const data = await response.json();
-      let user: User = {
-        id: 1,
-        email: 'rbetik12',
-        password: '',
-        name: 'deqqe',
-        role: 'User',
-        personalityType: 'ISTB'        
-      };
-      setUser(user);
-      handleUserSelection(user);
+      const response = await fetch(`http://localhost:8080/api/user/by_nickname/${searchNickname}`);
+      const data = await response.json();
+      handleUserSelection(data);
     } catch (error) {
       console.error('Error fetching user:', error);
     }
@@ -31,22 +22,22 @@ const UserStatisticsPage = () => {
 
   const fetchCompletedChallenges = async (userId: number) => {
     try {
-      //const response = await fetch(`http://localhost:8080/api/user/${userId}/completed_challenges`);
-      //const data = await response.json();
-      let challenge: Challenge = {
-        id: 1,
-        description: 'descr',
-        kingApproved: true,
-        difficulty: 2,
-        positionX: 2,
-        positionY: 1,
-        psycoApproved: true,
-        title: 'title',
-        routes: [],
-        completed: false
-      };
-      let challenges: Challenge[] = [challenge];
-      setCompletedChallenges(challenges);
+      const response = await fetch(`http://localhost:8080/api/user/${userId}/completed_challenges`);
+      const data = await response.json();
+      // let challenge: Challenge = {
+      //   id: 1,
+      //   description: 'descr',
+      //   kingApproved: true,
+      //   difficulty: 2,
+      //   positionX: 2,
+      //   positionY: 1,
+      //   psycoApproved: true,
+      //   title: 'title',
+      //   routes: [],
+      //   completed: false
+      // };
+      // let challenges: Challenge[] = [challenge];
+      setCompletedChallenges(data);
     } catch (error) {
       console.error('Error fetching completed challenges:', error);
     }

@@ -1,10 +1,7 @@
 package com.rproject.forest.controller
 
 import com.rproject.forest.config.WebConstants
-import com.rproject.forest.entity.Notification
-import com.rproject.forest.entity.NotificationType
-import com.rproject.forest.entity.PersonalityType
-import com.rproject.forest.entity.User
+import com.rproject.forest.entity.*
 import com.rproject.forest.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
@@ -49,6 +46,26 @@ class UserController(private val service: UserService) {
         val user = service.getUser(id)
         return if (user.isPresent) {
             ResponseEntity.ok().body(user.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/by_nickname/{nickname}")
+    fun getUserById(@PathVariable nickname: String): ResponseEntity<User> {
+        val user = service.getUserByName(nickname)
+        return if (user.isPresent) {
+            ResponseEntity.ok().body(user.get())
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @GetMapping("/{id}/completed_challenges")
+    fun getUserCompletedChallenges(@PathVariable id: Long): ResponseEntity<List<Challenge>> {
+        val list = service.getCompletedChallenges(id)
+        return if (list.isNotEmpty()) {
+            ResponseEntity.ok().body(list)
         } else {
             ResponseEntity.notFound().build()
         }
