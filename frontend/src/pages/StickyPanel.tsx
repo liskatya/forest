@@ -45,6 +45,14 @@ const StickyPanel = () => {
           <Button component={Link} to="/create_challenge" color="inherit">
             Create Challenge
           </Button>) : ("")}
+          {userData?.role === "Psychologist" ? (
+          <Button component={Link} to="/user_stats" color="inherit">
+            User stats
+          </Button>) : ("")}
+          {userData?.role === "Psychologist" ? (
+          <Button component={Link} to="/challenge_stats" color="inherit">
+            Challenge stats
+          </Button>) : ("")}
           <Button component={Link} to="/notifications" color="inherit">
             Notifications
           </Button>

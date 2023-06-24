@@ -15,6 +15,9 @@ import LoginPage from './pages/LoginPage';
 import CreateChallengePage from './pages/CreateChallengePage';
 import { UserService } from './services/UserService';
 import CreateRoutePage from './pages/CreateRoutePage';
+import UserStatisticsPage from './pages/UserStats';
+import ChallengeStatisticsPage from './pages/ChallengeStatisticsPage';
+import SingleChallengeStatsPage from './pages/SingleChallengeStatsPage';
 
 const App = () => {
   return (
@@ -33,6 +36,9 @@ const App = () => {
           <Route path="/create_challenge/:challengeId" element={<CreateChallengePage/>} />
           <Route path="/create_challenge/" element={<CreateChallengePage/>} />
           <Route path="/create_route/:notificationId" element={<CreateRoutePage/>} />
+          <Route path="/user_stats" element={<UserStatisticsPage/>} />
+          <Route path="/challenge_stats" element={<ChallengeStatisticsPage/>} />
+          <Route path="/single_challenge_stats/:challengeId" element={<SingleChallengeStatsPage/>} />
           {/* Using path="*"" means "match anything", so this route
                 acts like a catch-all for URLs that we don't have explicit
                 routes for. */}
