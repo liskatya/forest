@@ -13,7 +13,8 @@ const RoutePage: React.FC = () => {
       try {
         const userId = UserService.userId();
         const response = await fetch(`http://localhost:8080/api/navigation/route/${userId}`);
-        const data = await response.json();
+        const data = await response.json() as Route;
+
         setUserRoute(data);
       } catch (error) {
         console.error('Error fetching route:', error);
@@ -23,8 +24,17 @@ const RoutePage: React.FC = () => {
     fetchRoute();
   }, []);
 
-  const handleChallengeCompletion = (challenge: Challenge) => {
-
+  const handleChallengeCompletion = async (challenge: Challenge) => {
+    try {
+      const response = await fetch(`http://localhost:8080/api/navigation/challenge/${userRoute!!.id}/${challenge.id}/completed`,
+      {
+        'method': 'POST'
+      });
+      const data = await response.json();
+      challenge.completed = true;
+    } catch (error) {
+      console.error('Error complting challenge:', error);
+    }
   }
 
   return (
@@ -46,9 +56,12 @@ const RoutePage: React.FC = () => {
                   primary={`Latitude: ${challenge.positionX}`}
                   secondary={`Longitude: ${challenge.positionY}`}
                 />
-                <Button variant="contained" color="primary" onClick={() => {handleChallengeCompletion(challenge)}}>
-                  Finish
-                </Button>
+                {!challenge.completed && (
+                  <Button variant="contained" color="primary" onClick={() => {handleChallengeCompletion(challenge)}}>
+                    Finish
+                  </Button>
+                )}
+
                 {/* Render other challenge details */}
               </ListItem>
             ))}

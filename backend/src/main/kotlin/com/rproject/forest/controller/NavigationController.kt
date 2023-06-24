@@ -28,6 +28,15 @@ class NavigationController(private val navigationService: NavigationService) {
         return ResponseEntity.ok().body(res.get())
     }
 
+    @PostMapping("challenge/{routeId}/{challengeId}/completed")
+    fun completeChallenge(@PathVariable routeId: Long, @PathVariable challengeId: Long): ResponseEntity<Challenge> {
+        val res = navigationService.completeChallenge(routeId, challengeId)
+        if (res.isEmpty) {
+            return ResponseEntity.badRequest().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
+
     @PutMapping("challenge/approve/{id}/{personType}")
     fun approveChallenge(@PathVariable id: Long, @PathVariable personType: String): ResponseEntity<Challenge> {
         val res = navigationService.approveChallenge(id, personType == "King")

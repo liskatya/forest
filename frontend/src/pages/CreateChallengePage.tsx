@@ -86,7 +86,8 @@ const CreateChallengePage = () => {
       positionY: Number(position.split(",")[1]),
       kingApproved: kingApproved,
       psycoApproved: psycoApproved,
-      routes: routes
+      routes: routes,
+      completed: false
     }
 
     try {

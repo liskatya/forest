@@ -42,7 +42,8 @@ const UserStatisticsPage = () => {
         positionY: 1,
         psycoApproved: true,
         title: 'title',
-        routes: []
+        routes: [],
+        completed: false
       };
       let challenges: Challenge[] = [challenge];
       setCompletedChallenges(challenges);

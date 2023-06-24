@@ -1,10 +1,8 @@
 package com.rproject.forest.service
 
-import com.rproject.forest.entity.Challenge
-import com.rproject.forest.entity.Notification
-import com.rproject.forest.entity.NotificationType
-import com.rproject.forest.entity.Route
+import com.rproject.forest.entity.*
 import com.rproject.forest.repo.ChallengeRepository
+import com.rproject.forest.repo.ChallengeResultRepo
 import com.rproject.forest.repo.RouteRepository
 import com.rproject.forest.repo.UserRepository
 import org.slf4j.Logger
@@ -16,7 +14,8 @@ import java.util.*
 class NavigationService(private val challengeRepo: ChallengeRepository,
                         private val routeRepo: RouteRepository,
                         private val userRepo: UserRepository,
-                        private val notificationService: NotificationService) {
+                        private val notificationService: NotificationService,
+                        private val challengeResultRepo: ChallengeResultRepo) {
 
     private val logger: Logger = LoggerFactory.getLogger(NavigationService::class.java)
 
@@ -126,5 +125,23 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
 
     fun getChallenge(id: Long): Optional<Challenge> {
         return challengeRepo.findById(id)
+    }
+
+    fun completeChallenge(routeId: Long, challengeId: Long): Optional<Challenge> {
+        val challenge = challengeRepo.findById(challengeId)
+        val route = routeRepo.findById(routeId)
+
+        if (challenge.isEmpty || route.isEmpty) {
+            return Optional.empty()
+        }
+
+        val challengeResult = ChallengeResult(0, route.get(), challenge.get(), route.get().user)
+        challengeResultRepo.save(challengeResult)
+        return try {
+            Optional.of(challenge.get())
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
     }
 }

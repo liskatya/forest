@@ -9,5 +9,6 @@ export interface Challenge {
     positionY: Number,
     kingApproved: boolean,
     psycoApproved: boolean,
-    routes: Route[]
+    routes: Route[],
+    completed: boolean
 }
