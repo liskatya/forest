@@ -23,6 +23,10 @@ const RoutePage: React.FC = () => {
     fetchRoute();
   }, []);
 
+  const handleChallengeCompletion = (challenge: Challenge) => {
+
+  }
+
   return (
     <div>
       <Box sx={{ maxWidth: 600, margin: '0 auto', padding: '24px' }}>
@@ -42,6 +46,9 @@ const RoutePage: React.FC = () => {
                   primary={`Latitude: ${challenge.positionX}`}
                   secondary={`Longitude: ${challenge.positionY}`}
                 />
+                <Button variant="contained" color="primary" onClick={() => {handleChallengeCompletion(challenge)}}>
+                  Finish
+                </Button>
                 {/* Render other challenge details */}
               </ListItem>
             ))}
