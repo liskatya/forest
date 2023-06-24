@@ -1,6 +1,7 @@
 package com.rproject.forest.controller
 
 import com.rproject.forest.entity.Challenge
+import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.Route
 import com.rproject.forest.service.NavigationService
 import org.springframework.http.ResponseEntity
@@ -85,5 +86,11 @@ class NavigationController(private val navigationService: NavigationService) {
             return ResponseEntity.notFound().build()
         }
         return ResponseEntity.ok().body(res.get())
+    }
+
+    @GetMapping("challenge/by_person_type/{personType}/completion_percent")
+    fun getCompletionPercentByPersonType(@PathVariable personType: String): ResponseEntity<Float> {
+        val res = navigationService.getChallengeCompletionPercent(PersonalityType.valueOf(personType))
+        return ResponseEntity.ok().body(res)
     }
 }

@@ -9,6 +9,8 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @Service
 class NavigationService(private val challengeRepo: ChallengeRepository,
@@ -143,5 +145,26 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
             logger.error(e.toString())
             Optional.empty()
         }
+    }
+
+    fun getChallengeCompletionPercent(personType: PersonalityType): Float {
+        val challengesRes = challengeResultRepo.findAll()
+        val routes = routeRepo.findAll()
+        var completedChallenges = 0.0f
+        var allChallenges = 0.000001f
+
+        for (chRes in challengesRes) {
+            if (chRes.user.personalityType == personType) {
+                completedChallenges += 1
+            }
+        }
+
+        for (route in routes) {
+            for (routeChallenge in route.challenges) {
+                allChallenges += 1
+            }
+        }
+
+        return completedChallenges / allChallenges
     }
 }

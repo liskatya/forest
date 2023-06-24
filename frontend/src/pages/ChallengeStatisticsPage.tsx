@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Box, Typography, List, ListItem, ListItemText, Paper } from '@mui/material';
 import StickyPanel from './StickyPanel';
 import { Route, Routes, useNavigate } from 'react-router-dom';
@@ -6,19 +6,42 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 const ChallengeStatistics = () => {
   const navigate = useNavigate();
 
-  const completedChallengesByPersonType = [
-    { personalityType: 'Type A', completionPercent: 80 },
-    { personalityType: 'Type B', completionPercent: 60 },
-    { personalityType: 'Type C', completionPercent: 40 },
-    // Add more data as needed
-  ];
+  let completedChallengesByPersonType: any[] = [];
 
-  const challenges = [
+  let challenges = [
     { title: 'Challenge 1', completionPercent: 70 },
     { title: 'Challenge 2', completionPercent: 50 },
     { title: 'Challenge 3', completionPercent: 90 },
     // Add more challenges as needed
   ];
+
+  const personalityTypes = [
+    'ISTJ',
+    'ISFJ',
+    'INFJ',
+    'INTJ'
+  ];
+
+  useEffect(() => {
+    const fetchPCH = async (personType: string) => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/navigation/challenge/by_person_type/{personType}/completion_percent`);
+        const data = await response.text();
+        completedChallengesByPersonType.push(
+          { 
+            personalityType: personType, 
+            completionPercent: Number(data) 
+          },
+          );
+      } catch (error) {
+        console.error('Error fetching user:', error);
+      }
+    }
+
+    for (let i = 0; i < personalityTypes.length; i++) {
+      fetchPCH(personalityTypes[i]);
+    }
+  });
 
   const handleChallengeClick = (challenge: any) => {
     navigate('/single_challenge_stats/0');
