@@ -2,18 +2,14 @@ import React, { useEffect } from 'react';
 import { Box, Typography, List, ListItem, ListItemText, Paper } from '@mui/material';
 import StickyPanel from './StickyPanel';
 import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Challenge } from '../models/challenge';
 
 const ChallengeStatistics = () => {
   const navigate = useNavigate();
 
   let completedChallengesByPersonType: any[] = [];
 
-  let challenges = [
-    { title: 'Challenge 1', completionPercent: 70 },
-    { title: 'Challenge 2', completionPercent: 50 },
-    { title: 'Challenge 3', completionPercent: 90 },
-    // Add more challenges as needed
-  ];
+  let challengesStats: any[] = [];
 
   const personalityTypes = [
     'ISTJ',
@@ -41,6 +37,33 @@ const ChallengeStatistics = () => {
     for (let i = 0; i < personalityTypes.length; i++) {
       fetchPCH(personalityTypes[i]);
     }
+  });
+
+  useEffect(() => {
+    const fetchChallengeStats = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/navigation/challenge/all`);
+        const challenges = await response.json() as Challenge[];
+
+        for (let i = 0; i < challenges.length; i++) {
+          const challengeId = challenges[i].id;
+          const res = await fetch(`http://localhost:8080/api/navigation/challenge/${challengeId}/completion_percent`);
+          const percent = Number(await res.text());
+          challengesStats.push(
+            {
+              challenge: challenges[i],
+              percent: percent
+            }
+          );
+        }
+
+      } catch (error) {
+        console.error('Error fetching challenges stats:', error);
+      }
+    }
+
+    challengesStats = [];
+    fetchChallengeStats();
   });
 
   const handleChallengeClick = (challenge: any) => {
@@ -77,8 +100,8 @@ const ChallengeStatistics = () => {
           Challenges
         </Typography>
         <List>
-          {challenges.map((challenge) => (
-            <ListItem key={challenge.title} sx={{ mb: '8px' }} >
+          {challengesStats.map((challenge) => (
+            <ListItem key={challenge.challenge.title} sx={{ mb: '8px' }} >
               <div onClick={() => { handleChallengeClick(challenge)} }>
                 <Paper
                   sx={{
@@ -88,9 +111,9 @@ const ChallengeStatistics = () => {
                     backgroundColor: '#6fcf97',
                   }}
                 >
-                  <Typography variant="subtitle1">{challenge.title}</Typography>
+                  <Typography variant="subtitle1">{challenge.challenge.title}</Typography>
                   <br/>
-                  <Typography variant="subtitle2">{`${challenge.completionPercent}%`}</Typography>
+                  <Typography variant="subtitle2">{`${challenge.percent}%`}</Typography>
                 </Paper>
               </div>
             </ListItem>

@@ -23,6 +23,9 @@ data class User(
         val role: Role = Role.None,
 
         @Column(nullable = false)
+        val coins: Long = 0,
+
+        @Column(nullable = false)
         @Enumerated(EnumType.STRING)
         val personalityType: PersonalityType = PersonalityType.None
 )

@@ -167,4 +167,27 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
 
         return completedChallenges / allChallenges
     }
+
+    fun getChallengeCompletionPercent(challengeId: Long): Float {
+        val challenge = challengeRepo.findById(challengeId)
+        if (challenge.isEmpty) {
+            return 0.0f
+        }
+        val challengeResults = challengeResultRepo.findAllByChallenge(challenge.get())
+        val routes = routeRepo.findAll()
+        var completedChallenges = 0.0f
+        var allChallenges = 0.000001f
+
+        for (chRes in challengeResults) {
+            completedChallenges += 1
+        }
+
+        for (route in routes) {
+            for (routeChallenge in route.challenges) {
+                allChallenges += 1
+            }
+        }
+
+        return completedChallenges / allChallenges
+    }
 }

@@ -93,4 +93,10 @@ class NavigationController(private val navigationService: NavigationService) {
         val res = navigationService.getChallengeCompletionPercent(PersonalityType.valueOf(personType))
         return ResponseEntity.ok().body(res)
     }
+
+    @GetMapping("challenge/{id}/completion_percent")
+    fun getChallengeCompletionPercent(@PathVariable id: Long): ResponseEntity<Float> {
+        val res = navigationService.getChallengeCompletionPercent(id)
+        return ResponseEntity.ok().body(res)
+    }
 }
