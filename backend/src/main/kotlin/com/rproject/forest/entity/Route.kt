@@ -18,7 +18,7 @@ data class Route(
         joinColumns = [JoinColumn(name = "route_id")],
         inverseJoinColumns = [JoinColumn(name = "challenge_id")]
     )
-    val challenges: List<Challenge> = emptyList(),
+    var challenges: List<Challenge> = emptyList(),
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)

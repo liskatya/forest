@@ -2,6 +2,7 @@ package com.rproject.forest.controller
 
 import com.rproject.forest.config.WebConstants
 import com.rproject.forest.entity.*
+import com.rproject.forest.service.NavigationService
 import com.rproject.forest.service.UserService
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.http.ResponseEntity
@@ -9,7 +10,8 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/user")
-class UserController(private val service: UserService) {
+class UserController(private val service: UserService,
+                     private val navigationService: NavigationService) {
     @PostMapping(path = ["create"], consumes = ["application/json"], produces = ["application/json"])
     fun savePlayer(@RequestBody user: User, request: HttpServletRequest): ResponseEntity<User> {
         val createdUserOpt = service.saveUser(user)
@@ -76,6 +78,16 @@ class UserController(private val service: UserService) {
         val res = service.uploadTestResult(user)
         return if (res) {
             ResponseEntity.ok().body(user)
+        } else {
+            ResponseEntity.notFound().build()
+        }
+    }
+
+    @PostMapping("{challengeResultId}/{rewardAmount}/assignReward")
+    fun assignReward(@PathVariable challengeResultId: Long, @PathVariable rewardAmount: Long): ResponseEntity<User> {
+        val res = navigationService.assignReward(challengeResultId, rewardAmount)
+        return if (res.isPresent) {
+            ResponseEntity.ok().body(res.get())
         } else {
             ResponseEntity.notFound().build()
         }

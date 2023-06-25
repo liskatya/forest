@@ -5,4 +5,5 @@ enum class NotificationType {
     TestResultUploaded,
     ChallengeUploaded,
     ChallengeRejected,
+    ChallengeCompleted,
 }

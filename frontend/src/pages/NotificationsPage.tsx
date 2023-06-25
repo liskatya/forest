@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Card, CardContent, Typography, Button } from '@mui/material';
+import { Box, Card, CardContent, Typography, Button, TextField, Select, MenuItem } from '@mui/material';
 import { UserService } from '../services/UserService';
 import { User } from '../models/user';
 import { Notification } from '../models/notification';
@@ -11,7 +11,12 @@ const NotificationsPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [challenge, setChallenge] = useState<Challenge | null>(null);
+  const [reward, setReward] = useState('');
+  const [challengeId, setChallengeId] = useState('');
+  const [challenges, setChallenges] = useState<Challenge[] | null>([]);
   const navigate = useNavigate();
+
+// TODO: Add notification processed = true update
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -34,7 +39,7 @@ const NotificationsPage = () => {
       try {
         let notificationTypes: String[] = [];
         if (user && user.role === 'Psychologist') {
-          notificationTypes = ['TestResultUploaded', 'ChallengeUploaded']
+          notificationTypes = ['TestResultUploaded', 'ChallengeUploaded', 'ChallengeCompleted']
         }
         if (user && user.role === 'King') {
           notificationTypes = ['ChallengeUploaded']
@@ -58,6 +63,22 @@ const NotificationsPage = () => {
 
     fetchNotifications();
   }, [user]);
+
+  useEffect(() => {
+    //console.log('fetchChallenges');
+    const fetchChallenges = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/api/navigation/challenge/all');
+        const data = await response.json();
+        setChallenges(data);
+        //console.log('Challenges:', data);
+      } catch (error) {
+          console.error('Error fetching challenges:', error);
+      }
+    };
+
+    fetchChallenges();
+  }, []);
 
   const handleCreateRoute = (notification: Notification) => {
     // Handle creating a route for the notification
@@ -119,6 +140,42 @@ const NotificationsPage = () => {
     navigate(`/create_challenge/${notification.userId}`);
   };
 
+  const handleRewardAssignment = (notification: Notification, reward: Number) => {
+    const request = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/user/${notification.userId}/${reward}/assignReward`,
+        {
+          method: 'POST'
+        });
+        const data = await response.json();
+      } catch (error) {
+          console.error('Error assigning reward:', error);
+      }
+    }
+
+    request();
+  };
+
+  const handleChallengeAddition = (notification: Notification, challengeId: Number) => {
+    const request = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/navigation/route/${notification.userId}/${challengeId}/expand`,
+        {
+          method: 'POST'
+        });
+        const data = await response.json();
+      } catch (error) {
+          console.error('Error expanding route:', error);
+      }
+    }
+
+    request();
+  };
+
+  const handleChallengeIdChange = (event: any) => {
+    setChallengeId(event.target.value);
+  };
+
   return (
     <div>
       <Typography variant="h4">Notifications</Typography>
@@ -146,6 +203,36 @@ const NotificationsPage = () => {
               {notification.type === 'ChallengeRejected' && (
                 <div>
                   <Button onClick={() => handleChallengeRejected(notification)}>Edit challenge</Button>
+                </div>
+              )}
+              {notification.type === 'ChallengeCompleted' && (
+                <div>
+                  <TextField
+                  label="Reward"
+                  value={reward}
+                  onChange={(e) => setReward(e.target.value)}
+                  fullWidth
+                  required
+                  />
+                  <Select
+                    value={challengeId}
+                    onChange={handleChallengeIdChange}
+                    displayEmpty
+                    required
+                  >
+                    <MenuItem value="" disabled>
+                      Select Difficulty
+                    </MenuItem>
+                    {
+                      challenges && challenges.map((challenge) => (
+                        <MenuItem value={challenge.id.toString()}>
+                          {challenge.title}
+                        </MenuItem>
+                      ))
+                    }
+                  </Select>
+                  <Button onClick={() => handleRewardAssignment(notification, Number(reward))}>Assign reward</Button>
+                  <Button onClick={() => handleChallengeAddition(notification, Number(challengeId))}>Add new challenge</Button>
                 </div>
               )}
             </CardContent>

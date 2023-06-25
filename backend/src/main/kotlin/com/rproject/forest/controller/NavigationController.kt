@@ -99,4 +99,13 @@ class NavigationController(private val navigationService: NavigationService) {
         val res = navigationService.getChallengeCompletionPercent(id)
         return ResponseEntity.ok().body(res)
     }
+
+    @PostMapping("route/{challengeResultId}/{newChallengeId}/expand")
+    fun expandRoute(@PathVariable challengeResultId: Long, @PathVariable newChallengeId: Long): ResponseEntity<Route> {
+        val res = navigationService.expandRoute(challengeResultId, newChallengeId)
+        if (res.isEmpty) {
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
 }

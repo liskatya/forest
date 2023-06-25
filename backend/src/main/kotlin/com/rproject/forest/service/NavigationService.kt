@@ -138,7 +138,11 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
         }
 
         val challengeResult = ChallengeResult(0, route.get(), challenge.get(), route.get().user)
-        challengeResultRepo.save(challengeResult)
+        val savedResult = challengeResultRepo.save(challengeResult)
+
+        val notification = Notification(0, savedResult.id, NotificationType.ChallengeCompleted)
+        notificationService.post(notification)
+
         return try {
             Optional.of(challenge.get())
         } catch (e: Exception) {
@@ -189,5 +193,48 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
         }
 
         return completedChallenges / allChallenges
+    }
+
+    fun assignReward(challengeResultId: Long, reward: Long): Optional<User> {
+        val chRes = challengeResultRepo.findById(challengeResultId)
+        if (chRes.isEmpty) {
+            return Optional.empty()
+        }
+        val user = chRes.get().user
+        user.coins += reward
+
+        return try {
+            val savedUser = userRepo.save(user)
+            Optional.of(savedUser)
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
+    }
+
+    fun expandRoute(challengeResultId: Long, challengeId: Long): Optional<Route> {
+        val chRes = challengeResultRepo.findById(challengeResultId)
+        val ch = challengeRepo.findById(challengeId)
+        if (ch.isEmpty || chRes.isEmpty) {
+            return Optional.empty()
+        }
+
+        val routeOpt = routeRepo.findById(chRes.get().route.id)
+        if (routeOpt.isEmpty) {
+            return Optional.empty()
+        }
+
+        val route = routeOpt.get()
+        val challenge = ch.get()
+        val chArray = route.challenges.toMutableList()
+        chArray.add(challenge)
+        route.challenges = chArray
+
+        return try {
+            Optional.of(routeRepo.save(route))
+        } catch (e: Exception) {
+            logger.error(e.toString())
+            Optional.empty()
+        }
     }
 }
