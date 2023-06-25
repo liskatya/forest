@@ -179,7 +179,7 @@ const NotificationsPage = () => {
         const response = await fetch(`http://localhost:8080/api/navigation/challenge_result/${notification.userId}`);
         const chRes = await response.json() as ChallengeResult;
 
-        const notification: Notification = {
+        const notificationToSend: Notification = {
           id: 0,
           userId: chRes.challenge.id,
           processed: false,
@@ -188,10 +188,14 @@ const NotificationsPage = () => {
 
         const res = await fetch(`http://localhost:8080/api/notification`, {
           method: 'POST',
-          body: JSON.stringify(notification)
+          body: JSON.stringify(notificationToSend),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
 
         const data = await res.json()
+        console.log("Reported challenge successfully")
 
       } catch (error) {
           console.error('Error reporting challenge:', error);
