@@ -1,6 +1,7 @@
 package com.rproject.forest.controller
 
 import com.rproject.forest.entity.Challenge
+import com.rproject.forest.entity.ChallengeResult
 import com.rproject.forest.entity.PersonalityType
 import com.rproject.forest.entity.Route
 import com.rproject.forest.service.NavigationService
@@ -103,6 +104,15 @@ class NavigationController(private val navigationService: NavigationService) {
     @PostMapping("route/{challengeResultId}/{newChallengeId}/expand")
     fun expandRoute(@PathVariable challengeResultId: Long, @PathVariable newChallengeId: Long): ResponseEntity<Route> {
         val res = navigationService.expandRoute(challengeResultId, newChallengeId)
+        if (res.isEmpty) {
+            return ResponseEntity.notFound().build()
+        }
+        return ResponseEntity.ok().body(res.get())
+    }
+
+    @GetMapping("challenge_result/{id}")
+    fun getChallengeResult(@PathVariable id: Long): ResponseEntity<ChallengeResult> {
+        val res = navigationService.getChallengeResult(id)
         if (res.isEmpty) {
             return ResponseEntity.notFound().build()
         }

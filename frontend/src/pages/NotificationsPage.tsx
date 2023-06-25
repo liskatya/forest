@@ -6,6 +6,7 @@ import { Notification } from '../models/notification';
 import StickyPanel from './StickyPanel';
 import { useNavigate } from 'react-router-dom';
 import { Challenge } from '../models/challenge';
+import { ChallengeResult } from '../models/challenge_result';
 
 const NotificationsPage = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -172,6 +173,34 @@ const NotificationsPage = () => {
     request();
   };
 
+  const handleChallengeReport = (notification: Notification) => {
+    const request = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/api/navigation/challenge_result/${notification.userId}`);
+        const chRes = await response.json() as ChallengeResult;
+
+        const notification: Notification = {
+          id: 0,
+          userId: chRes.challenge.id,
+          processed: false,
+          type: 'ChallengeRejected'
+        }
+
+        const res = await fetch(`http://localhost:8080/api/notification`, {
+          method: 'POST',
+          body: JSON.stringify(notification)
+        });
+
+        const data = await res.json()
+
+      } catch (error) {
+          console.error('Error reporting challenge:', error);
+      }
+    }
+
+    request();
+  };
+
   const handleChallengeIdChange = (event: any) => {
     setChallengeId(event.target.value);
   };
@@ -233,6 +262,7 @@ const NotificationsPage = () => {
                   </Select>
                   <Button onClick={() => handleRewardAssignment(notification, Number(reward))}>Assign reward</Button>
                   <Button onClick={() => handleChallengeAddition(notification, Number(challengeId))}>Add new challenge</Button>
+                  <Button onClick={() => handleChallengeReport(notification)}>Report challenge</Button>
                 </div>
               )}
             </CardContent>

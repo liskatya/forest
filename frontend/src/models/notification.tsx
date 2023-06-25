@@ -1,6 +1,6 @@
 export interface Notification {
     id: number;
-    userId: number;
+    userId: Number;
     type: string;
     processed: boolean;
   }

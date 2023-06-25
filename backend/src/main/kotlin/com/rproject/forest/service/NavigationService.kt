@@ -237,4 +237,8 @@ class NavigationService(private val challengeRepo: ChallengeRepository,
             Optional.empty()
         }
     }
+
+    fun getChallengeResult(id: Long): Optional<ChallengeResult> {
+        return challengeResultRepo.findById(id)
+    }
 }
